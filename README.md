@@ -29,7 +29,8 @@ $args = array(
 
 ```
 
-*$vary_by_url*
+#####$vary_by_url
+
 This parameter ensures that a new menu cache is generated for every page. For best results set to FALSE (default: TRUE).
 Can be set to TRUE conditionally on certain pages.
 
@@ -38,7 +39,8 @@ Example: New cache only on category pages
 $args['vary_by_url'] = is_category() ? TRUE : FALSE;
 ```
 
-*$vary_on_single*
+#####$vary_on_single
+
 $vary_by_url is ineffective on single pages. This additional setting can be used to vary cache on single pages ( Default: FALSE ). This will not work when $vary_by_url is set to FALSE. Can be conditionally set certain single pages.
 
 Example: New cache for all 'book' custom post_type
@@ -46,7 +48,8 @@ Example: New cache for all 'book' custom post_type
 $args['vary_by_single'] = is_singular( 'book' ) ? TRUE : FALSE;
 ```
 
-*$vary_by_key*
+#####$vary_by_key
+
 Some Wordpress installs are set up to display the pages based on cookies, user-agents etc. Pass those values into this parameter.
 
 ```

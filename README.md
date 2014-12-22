@@ -18,10 +18,11 @@ gxt_nav_menu( $args );
 ```
 
 ###Additional parameters:
-Alongside the regular parameters of [wp_nav_menu()](http://codex.wordpress.org/Function_Reference/wp_nav_menu) there are 3 other parameters that can be passed into gxt_nav_menu().
+Alongside the regular parameters of [wp_nav_menu()](http://codex.wordpress.org/Function_Reference/wp_nav_menu) there are 3 additional parameters that can be passed into gxt_nav_menu().
 
 ```
 $args = array(
+              ...                          // Regular wp_nav_menu() args
               'vary_by_url'    => TRUE,
               'vary_on_single' => FALSE,
               'vary_by_key'    => FALSE

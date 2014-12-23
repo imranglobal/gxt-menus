@@ -8,18 +8,18 @@ class GX_Menus {
 		add_action( 'wp_update_nav_menu', array( $this, 'invalidate_menu_cache' ), 10, 1 );
 		add_action( 'update_option', array( $this, 'invalidate_theme_locations' ), 10, 1 );
 	}
-	public static function get_menu_id_by_args( $args ) {
+	public function get_menu_id_by_args( $args ) {
 		// Look if menu is being pointed directly, if not look for theme_location
 		if( isset( $args['menu'] ) ) {
-			$menu = self::get_nav_menu_object( $args['menu'] );
+			$menu = $this->get_nav_menu_object( $args['menu'] );
 			if( $menu && $menu->term_id ) {
 				return $menu->term_id;
 			}
 		} elseif( isset( $args['theme_location'] ) ) {
 			
-			$locations = self::get_theme_locations();			
+			$locations = $this->get_theme_locations();			
 			if( isset( $locations[ $args['theme_location'] ] ) ) {
-				$menu = self::get_nav_menu_object( $locations[ $args['theme_location'] ] );
+				$menu = $this->get_nav_menu_object( $locations[ $args['theme_location'] ] );
 				if( $menu && $menu->term_id ) {
 					return $menu->term_id;
 				}
@@ -27,7 +27,7 @@ class GX_Menus {
 		}
 		return FALSE;
 	}
-	static function get_theme_locations( ) {
+	public function get_theme_locations( ) {
 		$locations = wp_cache_get( 'gx_theme_menu_locations' );
 		if( $locations === FALSE ) {
 			$locations = get_nav_menu_locations();
@@ -42,7 +42,7 @@ class GX_Menus {
 	* @param int $menu_id
 	* @return object 
 	*/
-	static function get_nav_menu_object( $menu ) {
+	public function get_nav_menu_object( $menu ) {
 		if ( ! $menu ) {
 			return false;
 		}
@@ -71,7 +71,7 @@ class GX_Menus {
 		wp_cache_delete( 'gx_menu_grp_' . $menu_id );	
 		
 		// EXCEPTION: Invalidate main menu cache on dependant menu changes	
-		$menu = self::get_nav_menu_object( $menu_id );
+		$menu = $this->get_nav_menu_object( $menu_id );
 		do_action( 'gx_menu_changed', $menu );
 		
 		
@@ -109,18 +109,27 @@ function gxt_nav_menu( $args ) {
 		$cache_group = time();
 		wp_cache_set( 'gx_menu_grp_' . $id, $cache_group );
 	}
-	
-	$vary_by_url    = isset( $args['vary_by_url'] ) ? $args['vary_by_url'] : TRUE;
-	$vary_by_key    = isset( $args['vary_by_key'] ) ? $args['vary_by_key'] : FALSE;
-	$vary_on_single = isset( $args['vary_on_single'] ) ? $args['vary_on_single'] : FALSE;
-	
+		
 	$cache_args = $args;
-	if( $vary_by_url ) {
-		if( ! is_single() || ( is_single() && $vary_on_single ) ) {
-			global $wp;
-			$cache_args['url'] = $wp->request;
+	
+	// Vary by URL
+	$vary_by_url = FALSE;
+	if( isset( $args['vary_by_url'] ) ) {
+		$vary_by_url = $args['vary_by_url'];
+	} else {
+		// If no explicit vary by url, still we will vary on urls that are likely to be part of the menu. 
+		if( is_home() || is_category() || is_tag() || is_page() ) {
+			$vary_by_url = TRUE;
 		}
 	}
+	
+	if( $vary_by_url ) {
+		global $wp;
+		$cache_args['url'] = $wp->request;
+	}
+	
+	// Vary by key
+	$vary_by_key    = isset( $args['vary_by_key'] ) ? $args['vary_by_key'] : FALSE;
 	if( $vary_by_key ) {
 		$cache_args['key'] = $vary_by_key;
 	}
@@ -142,7 +151,8 @@ function gxt_nav_menu( $args ) {
 	
 }
 function gx_wp_nav_menu( $args, $vary_by_url = TRUE, $vary_by_key = FALSE ) {
-	$id = GX_Menus::get_menu_id_by_args( $args );
+	global $gxt_menus;
+	$id = $gxt_menus->get_menu_id_by_args( $args );
 	
 	if( !$id ) {
 		wp_nav_menu( $args );		

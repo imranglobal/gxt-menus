@@ -37,14 +37,14 @@ This parameter ensures that a new menu cache is generated for URLs on which this
 **Example:** New cache on category pages only
 ```
 ...
-$args['vary_by_url'] = is_category() ? TRUE : FALSE;
+$args['vary_by_url'] = is_category();
 gxt_nav_menu( $args );
 ```
 
 **Example:** New cache on custom taxonomy & tag pages only
 ```
 ...
-$args['vary_by_url'] = is_tax( 'person' ) || is_tag() ? TRUE : FALSE;
+$args['vary_by_url'] = is_tax( 'person' ) || is_tag();
 gxt_nav_menu( $args );
 ```
 
@@ -54,12 +54,21 @@ If *$vary_by_url* is not explicitally set, by default it will generate new cache
 
 #####$vary_by_key
 
-Some Wordpress installs are set up to display different pages based on cookies, user-agents etc. Pass those values into this parameter.
+Some Wordpress installs are set up to display different pages based on values from cookies, user-agents etc. Pass those values into this parameter.
 
 ```
 $args['vary_by_key'] = $_COOKIE['location'];
 // OR
 $args['vary_by_key'] = $_SERVER['HTTP_USER_AGENT'];
+```
+
+```
+// OR BOTH
+$args['vary_by_key'] = array( 
+                            $_SERVER['HTTP_USER_AGENT'],
+                            $_COOKIE['location']
+                            );
+
 ```
 
 

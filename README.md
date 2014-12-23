@@ -36,12 +36,16 @@ This parameter ensures that a new menu cache is generated for URLs on which this
 
 **Example:** New cache on category pages only
 ```
+...
 $args['vary_by_url'] = is_category() ? TRUE : FALSE;
+gxt_nav_menu( $args );
 ```
 
 **Example:** New cache on custom taxonomy & tag pages only
 ```
+...
 $args['vary_by_url'] = is_tax( 'person' ) || is_tag() ? TRUE : FALSE;
+gxt_nav_menu( $args );
 ```
 
 If *$vary_by_url* is not explicitally set, by default it will generate new cache when any one of is_home(), is_category(), is_tag() & is_page() returns TRUE.

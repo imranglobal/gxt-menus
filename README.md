@@ -18,13 +18,12 @@ gxt_nav_menu( $args );
 ```
 
 ###Additional parameters:
-Alongside the regular parameters of [wp_nav_menu()](http://codex.wordpress.org/Function_Reference/wp_nav_menu) there are 3 additional parameters that can be passed into gxt_nav_menu().
+Alongside the regular parameters of [wp_nav_menu()](http://codex.wordpress.org/Function_Reference/wp_nav_menu) there are 2 additional parameters that can be passed into gxt_nav_menu().
 
 ```
 $args = array(
               ...                          // Regular wp_nav_menu() args
               'vary_by_url'    => TRUE,
-              'vary_on_single' => FALSE,
               'vary_by_key'    => FALSE
         );
 
@@ -32,31 +31,44 @@ $args = array(
 
 #####$vary_by_url
 
-This parameter ensures that a new menu cache is generated for every page. For best results set to FALSE (default: TRUE).
-Can be set to TRUE conditionally on certain pages too. Use when "current item" of menu is not needed.
+This parameter ensures that a new menu cache is generated for URLs on which this is set to TRUE. Best caching results are achieved when set to FALSE (i.e. same menu cache is shared across the site). Can be set to TRUE conditionally too.
+ 
 
-Example: New cache on category pages only
+**Example:** New cache on category pages only
 ```
-$args['vary_by_url'] = is_category() ? TRUE : FALSE;
+...
+$args['vary_by_url'] = is_category();
+gxt_nav_menu( $args );
 ```
 
-#####$vary_on_single
-
-$vary_by_url is ineffective on single pages. This additional setting can be used to vary cache on single pages ( Default: FALSE ). This will not work when $vary_by_url is set to FALSE. Can be conditionally set certain single pages.
-
-Example: New cache for all 'book' custom post_type single pages
+**Example:** New cache on custom taxonomy & tag pages only
 ```
-$args['vary_on_single'] = is_singular( 'book' ) ? TRUE : FALSE;
+...
+$args['vary_by_url'] = is_tax( 'person' ) || is_tag();
+gxt_nav_menu( $args );
 ```
+
+If *$vary_by_url* is not explicitally set, by default it will generate new cache when any one of is_home(), is_category(), is_tag() & is_page() returns TRUE.
+
+**Note:** Setting this to TRUE for is_single() OR is_singular() may create a large cache footprint.
 
 #####$vary_by_key
 
-Some Wordpress installs are set up to display the pages based on cookies, user-agents etc. Pass those values into this parameter.
+Some Wordpress installs are set up to display different pages based on values from cookies, user-agents etc. Pass those values into this parameter.
 
 ```
 $args['vary_by_key'] = $_COOKIE['location'];
 // OR
 $args['vary_by_key'] = $_SERVER['HTTP_USER_AGENT'];
+```
+
+```
+// OR BOTH
+$args['vary_by_key'] = array( 
+                            $_SERVER['HTTP_USER_AGENT'],
+                            $_COOKIE['location']
+                            );
+
 ```
 
 

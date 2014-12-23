@@ -150,48 +150,5 @@ function gxt_nav_menu( $args ) {
 	echo $html;
 	
 }
-function gx_wp_nav_menu( $args, $vary_by_url = TRUE, $vary_by_key = FALSE ) {
-	global $gxt_menus;
-	$id = $gxt_menus->get_menu_id_by_args( $args );
-	
-	if( !$id ) {
-		wp_nav_menu( $args );		
-		return;
-	}
-	
-	// Menu group
-	$cache_group = wp_cache_get( 'gx_menu_grp_' . $id );
-	
-	if( $cache_group === FALSE ) {
-		$cache_group = time();
-		wp_cache_set( 'gx_menu_grp_' . $id, $cache_group );
-	}
-	
-	
-	$cache_args = $args;
-	
-	// If the menu accounts for current url ( i.e. current item highlights )
-	if( $vary_by_url ) {
-		global $wp;
-		$cache_args['url'] = $wp->request;
-	}
-	if( $vary_by_key ) {
-		$cache_args['key'] = $vary_by_key;
-	}
-	
-	$cache_key = 'gx_m_' . $id . '_' . md5( maybe_serialize( $cache_args ) );
-	$html      = wp_cache_get( $cache_key, $cache_group );
-	if( $html === FALSE ) {
-		$html = '';
-		ob_start();
-		wp_nav_menu( $args );
-		$html = ob_get_clean();
-		wp_cache_set( $cache_key, $html, $cache_group );	
-		
-	}
-	if( isset( $args['echo'] ) && $args['echo'] === FALSE ) {
-		return $html;
-	}
-	echo $html;
-}
+
 ?>

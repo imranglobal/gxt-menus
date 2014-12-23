@@ -34,24 +34,24 @@ $args = array(
 This parameter ensures that a new menu cache is generated for pages on which this is set to TRUE. Best caching results are achieved when set to FALSE.
 Can be set to TRUE conditionally on certain pages too. Use when "current item" of menu is not needed.
 
-Example: New cache on category pages only
+**Example:** New cache on category pages only
 ```
 $args['vary_by_url'] = is_category() ? TRUE : FALSE;
 ```
 
-Example: New cache on archive pages only
+**Example:** New cache on archive pages only
 ```
 $args['vary_by_url'] = is_archive() ? TRUE : FALSE;
 ```
 
-Example: New cache on custom taxonomy & tag pages only
+**Example:** New cache on custom taxonomy & tag pages only
 ```
 $args['vary_by_url'] = is_tax( 'person' ) || is_tag() ? TRUE : FALSE;
 ```
 
 If this is not set, by default it will generate new cache when any one of is_home(), is_category(), is_tag() & is_page() returns TRUE.
 
-*Note:* Setting this to TRUE for is_single() OR is_singular() may create a large cache footprint resulting in fewer benefits of the plugin.
+**Note:** Setting this to TRUE for is_single() OR is_singular() may create a large cache footprint resulting in fewer benefits of the plugin.
 
 #####$vary_by_key
 
